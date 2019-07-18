@@ -6,13 +6,8 @@ const Dashboard = ({navigation}) => {
 
   return(
     <View>
-      <Text>Dashboard fucks</Text>
+      <Text>Dashboard Abhi patel the great</Text>
     </View>
   )
 }
-
-Dashboard.navigationOptions = (navigation)=>({
-  title:"Happy Green 🌴"
-})
-
 export default Dashboard;
