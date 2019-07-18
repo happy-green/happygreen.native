@@ -9,13 +9,6 @@ const Register = ({navigation}) => {
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
 
-
-  const checkToken = async () => {
-    const token = await AsyncStorage.getItem('auth-token');
-
-    if(!token) return false;
-    return true;
-  }
   const setStorage = async (key,value) => {
     try {
       await AsyncStorage.setItem(key,value);
@@ -25,11 +18,9 @@ const Register = ({navigation}) => {
   }
 
   const SubmitForm = ()=>{
-    alert(config.serverIp);
     axios.post(`${config.serverIp}/auth/login`,{Email:email,Password:password})
     .then(userData=>{
       const token = userData.data.token;
-
       setStorage('auth-token',token)
       .then(done=>{
         navigation.navigate('Dashboard')
@@ -42,43 +33,36 @@ const Register = ({navigation}) => {
       alert(err.message);
     })
   }
-
-  if(checkToken){
-   return navigation.navigate('Dashboard');
-  }
-  else{
-
-    return(
-      <View style={RegisterView.container}>
-        <StatusBar backgroundColor="white" barStyle="dark-content"></StatusBar>
-        <View style={RegisterView.TitleView}>
-          <Text style={RegisterView.Title}>Happy Green 🌴</Text>
-        </View>
-        <KeyboardAvoidingView style={RegisterView.container}>
-          <TouchableWithoutFeedback style={RegisterView.container} onPress={Keyboard.dismiss}>
-            <View style={RegisterView.InputView}>
-              <TextInput placeholder="Enter Your Email" 
-                style={RegisterView.InputField} 
-                keyboardType="email-address" 
+  return(
+    <View style={RegisterView.container}>
+      <StatusBar backgroundColor="white" barStyle="dark-content"></StatusBar>
+      <View style={RegisterView.TitleView}>
+        <Text style={RegisterView.Title}>Happy Green 🌴</Text>
+      </View>
+      <KeyboardAvoidingView style={RegisterView.container}>
+        <TouchableWithoutFeedback style={RegisterView.container} onPress={Keyboard.dismiss}>
+          <View style={RegisterView.InputView}>
+            <TextInput placeholder="Enter Your Email" 
+              style={RegisterView.InputField} 
+              keyboardType="email-address" 
+              placeholderTextColor="black" 
+              autoCorrect={false} 
+              onChangeText={(email)=>setEmail(email)}/>
+            
+            <TextInput placeholder="Enter Your Password" 
+                style={RegisterView.InputField}
+                keyboardType="default" secureTextEntry 
                 placeholderTextColor="black" 
                 autoCorrect={false} 
-                onChangeText={(email)=>setEmail(email)}/>
-              
-              <TextInput placeholder="Enter Your Password" 
-                  style={RegisterView.InputField}
-                  keyboardType="default" secureTextEntry 
-                  placeholderTextColor="black" 
-                  autoCorrect={false} 
-                  onChangeText={(password)=>setPassword(password)}/>
-              <TouchableOpacity style={RegisterView.InputButton} onPress={()=>SubmitForm()}>
-                <Text style={{color:'white',fontSize:18,fontWeight:'normal'}}>Log In</Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </View>
-    )
-  }
+                onChangeText={(password)=>setPassword(password)}/>
+            <TouchableOpacity style={RegisterView.InputButton} onPress={()=>SubmitForm()}>
+              <Text style={{color:'white',fontSize:18,fontWeight:'normal'}}>Log In</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </View>
+  )
 }
 
 export default Register;
