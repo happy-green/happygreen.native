@@ -1,9 +1,10 @@
 import React,{useState,useEffect} from 'react';
-import { View,Text,AsyncStorage,StatusBar} from 'react-native';
+import { View,Text,StatusBar,AsyncStorage} from 'react-native';
+
 import Icon from 'react-native-vector-icons/FontAwesome'
 
 import axios from 'axios';
-import config from '../config.json';
+import config from '../../config.json';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
@@ -19,7 +20,7 @@ const Profile = ({navigation}) => {
       setProfileData(data.profile);
     })
     .catch(err=>{
-      // alert(err);
+      alert(err);
     })
   },[])
 

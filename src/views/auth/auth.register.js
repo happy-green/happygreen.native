@@ -1,13 +1,19 @@
 import React,{ useState, useEffect } from 'react';
-import {View,Text,Button,StyleSheet,StatusBar,TextInput,KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,Keyboard,AsyncStorage} from 'react-native';
+import {View,Text,Button,
+  StyleSheet,StatusBar,TextInput,
+  KeyboardAvoidingView,TouchableOpacity,TouchableWithoutFeedback,
+  Keyboard,AsyncStorage} from 'react-native';
 
-import config from '../config.json'
+import config from '../../config.json';
 import axios from 'axios';
 
 const Register = ({navigation}) => {
 
   const [email,setEmail] = useState("");
   const [password,setPassword] = useState("");
+  const [username,setUsername] = useState("");
+  const [confirmPass,setConfirm] = useState("");
+
 
   const setStorage = async (key,value) => {
     try {
@@ -18,12 +24,23 @@ const Register = ({navigation}) => {
   }
 
   const SubmitForm = ()=>{
-    axios.post(`${config.serverIp}/auth/login`,{Email:email,Password:password})
+
+
+    if(!(email || password || username || confirmPass)){
+      return alert("All fields are required");
+    }
+
+
+    if(password !== confirmPass){
+      return alert("Passwords dont match");
+    }
+
+    axios.post(`${config.serverIp}/auth/register`,{Email:email,Password:password,UserName:username})
     .then(userData=>{
       const token = userData.data.token;
       setStorage('auth-token',token)
       .then(done=>{
-        navigation.navigate('Dashboard')
+        return navigation.navigate('Dashboard')
       })
       .catch(err=>{
         alert(err.message);
@@ -36,27 +53,40 @@ const Register = ({navigation}) => {
   return(
     <View style={RegisterView.container}>
       <StatusBar backgroundColor="white" barStyle="dark-content"></StatusBar>
-      <View style={RegisterView.TitleView}>
-        <Text style={RegisterView.Title}>Happy Green 🌴</Text>
-      </View>
       <KeyboardAvoidingView style={RegisterView.container}>
         <TouchableWithoutFeedback style={RegisterView.container} onPress={Keyboard.dismiss}>
           <View style={RegisterView.InputView}>
-            <TextInput placeholder="Enter Your Email" 
+            
+            <TextInput placeholder="Username" 
+              style={RegisterView.InputField} 
+              keyboardType="default" 
+              placeholderTextColor="black" 
+              autoCorrect={false} 
+              onChangeText={(username)=>setUsername(username)}/>
+            
+            <TextInput placeholder="Email" 
               style={RegisterView.InputField} 
               keyboardType="email-address" 
               placeholderTextColor="black" 
               autoCorrect={false} 
               onChangeText={(email)=>setEmail(email)}/>
             
-            <TextInput placeholder="Enter Your Password" 
+            <TextInput placeholder="Password" 
                 style={RegisterView.InputField}
                 keyboardType="default" secureTextEntry 
                 placeholderTextColor="black" 
                 autoCorrect={false} 
                 onChangeText={(password)=>setPassword(password)}/>
+                        
+            <TextInput placeholder="Confirm password" 
+                style={RegisterView.InputField}
+                keyboardType="default" secureTextEntry 
+                placeholderTextColor="black" 
+                autoCorrect={false} 
+                onChangeText={(confirmPassword)=>setConfirm(confirmPassword)}/>
+            
             <TouchableOpacity style={RegisterView.InputButton} onPress={()=>SubmitForm()}>
-              <Text style={{color:'white',fontSize:18,fontWeight:'normal'}}>Log In</Text>
+              <Text style={{color:'white',fontSize:18,fontWeight:'normal'}}>Register</Text>
             </TouchableOpacity>
           </View>
         </TouchableWithoutFeedback>
@@ -65,7 +95,9 @@ const Register = ({navigation}) => {
   )
 }
 
-export default Register;
+
+
+
 
 const RegisterView  = StyleSheet.create({
   container:{
@@ -135,3 +167,5 @@ const RegisterView  = StyleSheet.create({
     // flex:1
   }
 })
+
+export default Register;

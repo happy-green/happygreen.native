@@ -1,16 +1,59 @@
 import React from 'react';
-import {createAppContainer,createStackNavigator,createSwitchNavigator,createBottomTabNavigator} from 'react-navigation';
+import {createAppContainer,createStackNavigator,
+  createSwitchNavigator,createBottomTabNavigator,
+  createMaterialTopTabNavigator
+} from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-import {AsyncStorage} from 'react-native';
 
-import RegisterView from './views/view.register'
-import HomePage from './views/view.dashboard';
-import Profile  from './views/view.profile';
-import Settings from './views/views.settings';
-import Notifications from './views/view.notifications';
-import Search from './views/view.search';
+// Auth imports
+import RegisterView from './views/auth/auth.register';
+import AuthIndex from './views/auth/auth.index';
+import LoginView from './views/auth/auth.login';
 
+// Dashboard view
+import HomePage from './views/dashboard/view.home';
+import Profile  from './views/dashboard/view.profile';
+import Settings from './views/dashboard/views.settings';
+import Notifications from './views/dashboard/view.notifications';
+import Search from './views/dashboard/view.search';
+5
+// Auth Navigator
+
+const AuthNavigator = createStackNavigator({
+  Index:{
+    screen:AuthIndex,
+
+  },
+  Register:{
+    screen:RegisterView,
+    navigationOptions:{
+     title:"Register" 
+    }
+  },
+  Login:{
+    screen:LoginView,
+    navigationOptions:{
+     title:"Login" 
+    }
+  }
+},
+{
+  initialRouteName:"Index",
+  defaultNavigationOptions:{
+    gesturesEnabled:true,
+    headerStyle:{
+      backgroundColor:'transparent',
+      shadowColor:'transparent',
+      shadowRadius:0,
+      shadowOffset:{
+        height:0
+      }
+    }
+  }
+})
+
+// Home Navigator
 const HomeNavigator = createStackNavigator({
   Home:{
     screen:HomePage,
@@ -80,7 +123,7 @@ const MainTabNavigator = createBottomTabNavigator({
 })
 
 const AppSwitchNavigator = createSwitchNavigator({
-  Auth:RegisterView,
+  Auth:AuthNavigator,
   Dashboard:MainTabNavigator
 },{
   initialRouteName:'Auth'
